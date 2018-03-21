@@ -23,24 +23,31 @@ for f in files:
   df = df[x_cols+y_cols]
   stocks[code] = df
 
-chosen_code = '000009'
-chosen_stock = stocks[chosen_code]
+def get_stock_dataset(stock_df):
+  feats = []
+  labels = []
+  for x,y in seq_sample.get_feats_labels(stock_df,30,5):
+    for code in stocks:
+      stock = stocks[code]
+      feat = stock[min(x.index):max(x.index)]
+      label = stock[min(y.index):max(y.index)]
+      if len(x) == len(feat) and len(y) == len(label) :
+        feat = (feat-feat.mean())/feat.std()
+        feats.append(feat)
+        y = (y-y.mean())/y.std()
+        labels.append(y)
+  return (feats, labels)
 
-feats = []
-labels = []
-for x,y in seq_sample.get_feats_labels(chosen_stock,30,5):
-  for code in stocks:
-    stock = stocks[code]
-    feat = stock[min(x.index):max(x.index)]
-    label = stock[min(y.index):max(y.index)]
-    if len(x) == len(feat) and len(y) == len(label) :
-      feats.append(feat)
-      labels.append(y)
+stock = stocks['000009']
+(feats,labels) = get_stock_dataset(stock)
 
+#for code in stocks:
+#  stock = stocks[code]
+#
+#  (feats,labels) = get_stock_dataset(stock)
+#  print("%s: " % code)
+#  print("feats size: ", len(feats)), "labels size: ", len(labels)
 
-    
-    
-    
 #feats = []
 #labels = []
 #for code in seqs:
