@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 import os
 import seq_sample
@@ -23,23 +24,27 @@ for f in files:
   df = df[x_cols+y_cols]
   stocks[code] = df
 
-def get_stock_dataset(stock_df):
+def get_stock_dataset(stock_df,n_feats=30,n_labels=5):
   feats = []
   labels = []
-  for x,y in seq_sample.get_feats_labels(stock_df,30,5):
+  for x,y in seq_sample.get_feats_labels(stock_df,n_feats,n_labels):
     for code in stocks:
       stock = stocks[code]
       feat = stock[min(x.index):max(x.index)]
       label = stock[min(y.index):max(y.index)]
       if len(x) == len(feat) and len(y) == len(label) :
+        # normalized
         feat = (feat-feat.mean())/feat.std()
         feats.append(feat)
+
+        # normalized
         y = (y-y.mean())/y.std()
         labels.append(y)
-  return (feats, labels)
 
-stock = stocks['000009']
-(feats,labels) = get_stock_dataset(stock)
+  return (np.stack(feats), np.stack(labels))
+
+#stock = stocks['000009']
+#(feats,labels) = get_stock_dataset(stock)
 
 #for code in stocks:
 #  stock = stocks[code]

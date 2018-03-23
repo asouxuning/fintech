@@ -87,7 +87,7 @@ class RNN():
     return ts
 
   def output(self):
-    return self.outupts
+    return self.outputs
 
   def cost(self):
     y_ = self.outputs
@@ -100,7 +100,7 @@ class RNN():
     return loss
 
   # learning rate, default 0.1
-  def optimizer(self,lr = 0.1): 
+  def backward(self,lr = 0.1): 
     # gradients
     grads = T.grad(cost=self.loss, wrt=self.params)
     
@@ -122,3 +122,8 @@ class RNN():
                               outputs=self.outputs)
     self.predict = predict
     return predict
+
+  #def train_batch(batch): 
+  #  batch_size = batch.shape[0]
+    
+    

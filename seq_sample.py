@@ -2,6 +2,30 @@ from pandas import Series,DataFrame
 import pandas as pd
 import numpy as np
 
+def shufflelists(lists):
+  # reindex
+  ri = np.random.permutation(len(lists[0]))
+  out = []
+  for l in lists:
+    out.append(l[ri])
+  return out
+
+def get_rnn_batch(seq, bs):
+  seq_ = [] 
+  seq_len = len(seq)
+  count = (seq_len // bs)#+1
+  remainder = seq_len % bs
+  for i in range(count):
+    batch = seq[i*bs:(i+1)*bs]
+    batch = np.stack(batch,axis=1)
+    seq_.append(batch)   
+  # concatenate last batch
+  i += 1
+  batch = np.concatenate((seq[i*bs:(i+1)*bs], seq[:bs-remainder]))
+  batch = np.stack(batch,axis=1)
+  seq_.append(batch)
+  return np.stack(seq_)
+    
 # 从一个DataFrame表示的时间序列中产生
 # 样本的特征和标签
 # 时间序列是一个逐次抽取定长子序列的过程
