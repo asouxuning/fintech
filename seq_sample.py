@@ -74,7 +74,7 @@ def get_sample(seq, ws, cut):
 
 def get_feats_labels(seq, n_feats, n_labels):
   for feat,label in get_sample(seq, n_feats+n_labels, n_feats):
-    yield feat,label
+    yield (feat,label)
 
 #def loop_sub_seqs(seqs, ws):
 #  l = min([len(seq) for seq in seqs])

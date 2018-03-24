@@ -3,9 +3,10 @@ import stock_data
 import seq_sample
 import numpy as np
 
-stock = stock_data.stocks['000009']
+path = 'data/hist/'
+stocks = stock_data.fetch_group_stocks_from_fs(path)
+feats,labels = stock_data.get_stock_sample(stocks, '000009', 30, 5)
 
-(feats,labels) = stock_data.get_stock_dataset(stock)
 (feats,labels) = seq_sample.shufflelists([feats,labels])
 feats = seq_sample.get_rnn_batch(feats,128)
 labels = seq_sample.get_rnn_batch(labels,128)
