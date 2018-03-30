@@ -10,21 +10,60 @@ def shufflelists(lists):
     out.append(l[ri])
   return out
 
-def get_rnn_batch(seq, bs):
+# 将序列集合转换成batch size为bs的RNN所需的样本
+# 将batch_size个序列样本打包成一个batch张量
+# 并构成新序列返回
+def get_seq_batch(seq,batch_size):
   seq_ = [] 
+  labels_ = []
+
   seq_len = len(seq)
-  count = (seq_len // bs)#+1
-  remainder = seq_len % bs
+  count = (seq_len // batch_size) #+1
+  remainder = seq_len % batch_size
   for i in range(count):
-    batch = seq[i*bs:(i+1)*bs]
-    batch = np.stack(batch,axis=1)
+    # get a batch of seqences
+    # 取出batch_size个特征序列样本
+    batch = seq[i*batch_size:(i+1)*batch_size]
+
     seq_.append(batch)   
+    
   # concatenate last batch
   i += 1
-  batch = np.concatenate((seq[i*bs:(i+1)*bs], seq[:bs-remainder]))
-  batch = np.stack(batch,axis=1)
+  batch = np.concatenate((seq[i*batch_size:(i+1)*batch_size], seq[:batch_size-remainder]))
+  #batch = np.stack(batch,axis=1)
   seq_.append(batch)
+
   return np.stack(seq_)
+
+# 将每个样本张量改为RNN所需要的形式 
+def get_rnn_batchs(seq):
+  seq_ = []
+  for i in range(len(seq)):
+    batch = seq[i]
+
+    # 将batch_size个特征样本序列的相同index的元素合并为一个张量 
+    # 构成一个(seq_len, batch_size, vector_dim)的张量
+    batch = np.stack(batch,axis=1)
+    seq_.append(batch)
+
+  return np.stack(seq_)
+    
+## 将序列集合转换成batch size为bs的RNN所需的样本
+#def get_rnn_batch(seq, bs):
+#  seq_ = [] 
+#  seq_len = len(seq)
+#  count = (seq_len // bs)#+1
+#  remainder = seq_len % bs
+#  for i in range(count):
+#    batch = seq[i*bs:(i+1)*bs]
+#    batch = np.stack(batch,axis=1)
+#    seq_.append(batch)   
+#  # concatenate last batch
+#  i += 1
+#  batch = np.concatenate((seq[i*bs:(i+1)*bs], seq[:bs-remainder]))
+#  batch = np.stack(batch,axis=1)
+#  seq_.append(batch)
+#  return np.stack(seq_)
     
 # 从一个DataFrame表示的时间序列中产生
 # 样本的特征和标签
