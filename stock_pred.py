@@ -35,7 +35,7 @@ rnn.backward()
 rnn.compile_train()
 rnn.compile_predict()
 
-n_epoches = 100
+n_epoches = 2000
 cost_list = []
 for j in range(n_epoches):
   feats_,labels_ = stock_data.rearange_stock_samples(feats,labels,128)
